@@ -1,0 +1,25 @@
+{
+  "manifest_version": 2,
+  "name": "Floating Youtube",
+  "version": "1",
+  "description": "Floats the Youtube video on the right when scrolling past the video.",
+  "author": "jimbojim1997",
+
+  "icons": {
+    "128": "icon128.png"
+  },
+
+    "content_scripts": [
+      {
+        "matches": [
+          "https://*.youtube.com/watch*"
+        ],
+
+        "js": [
+          "main.js"
+        ],
+		
+		"run_at": "document_end"
+      }
+    ]
+  }
