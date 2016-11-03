@@ -12,40 +12,49 @@ function Load() {
 
     window.addEventListener("scroll", PageScroll, false);
     window.addEventListener("resize", PageResize, false);
-    PageScroll();
+	
+	SetPlayerInitial();
+	PageScroll();
 	
 	Log("Loaded");
 }
 
-function PageScroll(e) {
+function PageScroll() {
     if (window.pageYOffset > scrollTopThreshold && !isFloating) {//make video float
-        var player = _(playerID);
+		SetPlayerFloating();
+        isFloating = true;
+        Log("Player floating:true");
+
+    } else if (window.pageYOffset < scrollTopThreshold && isFloating) {//reset video
+		SetPlayerInitial();
+        isFloating = false;
+        Log("Player floating:false");
+    }
+}
+
+function SetPlayerFloating(){
+	var player = _(playerID);
 		var sidebar = _(sidebarID);
 		
 		var playerScaleFactor = CalculateScale(player, sidebar);
 
+		player.style.transition = "left 0.5s ease-in-out, transform 0.5s ease-in-out, transformOrigin 0.5s ease-in-out";
         player.style.position = "fixed";
         player.style.top = playerFlaotTop + "px";
         player.style.left = sidebar.getBoundingClientRect().left + "px";
         player.style.transformOrigin = "top left";
         player.style.transform = "scale(" + playerScaleFactor + ")";
+}
 
-        isFloating = true;
-        Log("Player floating:true");
-
-    } else if (window.pageYOffset < scrollTopThreshold && isFloating) {//reset video
-		var player = _(playerID);
-		var sidebar = _(sidebarID);
-		
-        player.style.position = "absolute";
-        player.style.top = "0px";
-        player.style.left = "0px";
-        player.style.transformOrigin = "top left";
-        player.style.transform = "scale(1)";
-
-        isFloating = false;
-        Log("Player floating:false");
-    }
+function SetPlayerInitial(){
+	var player = _(playerID);
+	var sidebar = _(sidebarID);
+	
+	player.style.position = "absolute";
+	player.style.top = "0px";
+	player.style.left = "0px";
+	player.style.transformOrigin = "top left";
+	player.style.transform = "scale(1)";
 }
 
 function PageResize(e) {
