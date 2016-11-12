@@ -83,7 +83,7 @@ function CalculateScale(target, scaleTo) {
     return scale;
 }
 
-function Log(message){
+function Log(message) {
 	if(typeof(message) == typeof("")){
 		console.log("<Floating Youtube>: " + message);	
 	}else{
@@ -95,11 +95,13 @@ function Log(message){
 
 String.prototype.format = function () {
     var args = arguments;
-    var str = this;
+    var str = this.toString();
     for (var i = 0; i < args.length; i++) {
-        var match = /({(\d)})/.exec(str);
-        console.log(match);
-        str = str.replace(match[1], args[match[2]]);
+        var regex = /({(\d+)})/
+        while (str.search(regex) != -1) {
+            var match = regex.exec(str);
+            str = str.replace(match[1], args[match[2]]);
+        }
     }
 
     return str;
