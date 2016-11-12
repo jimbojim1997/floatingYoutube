@@ -1,5 +1,6 @@
 var scrollTopThreshold = 10;
 var playerFlaotTop = 50;
+var playerTransitionTime = 0.5;
 
 var isFloating = false;
 var playerID = "player-api";
@@ -8,7 +9,6 @@ var sidebarID = "watch7-sidebar-contents";
 window.addEventListener("load", Load, false);
 
 function Load() {
-    //originalPlayerStyle = JSON.parse(JSON.stringify(player.style)); //clone player style to later revert to
 
     window.addEventListener("scroll", PageScroll, false);
     window.addEventListener("resize", PageResize, false);
@@ -21,34 +21,45 @@ function Load() {
 
 function PageScroll() {
     if (window.pageYOffset > scrollTopThreshold && !isFloating) {//make video float
-		SetPlayerFloating();
+		SetPlayerFloating(true);
         isFloating = true;
         Log("Player floating:true");
 
     } else if (window.pageYOffset < scrollTopThreshold && isFloating) {//reset video
-		SetPlayerInitial();
+		SetPlayerInitial(true);
         isFloating = false;
         Log("Player floating:false");
     }
 }
 
-function SetPlayerFloating(){
-	var player = _(playerID);
-		var sidebar = _(sidebarID);
-		
-		var playerScaleFactor = CalculateScale(player, sidebar);
-
-		player.style.transition = "left 0.5s ease-in-out, transform 0.5s ease-in-out, transformOrigin 0.5s ease-in-out";
-        player.style.position = "fixed";
-        player.style.top = playerFlaotTop + "px";
-        player.style.left = sidebar.getBoundingClientRect().left + "px";
-        player.style.transformOrigin = "top left";
-        player.style.transform = "scale(" + playerScaleFactor + ")";
-}
-
-function SetPlayerInitial(){
+function SetPlayerFloating(useTransition){
 	var player = _(playerID);
 	var sidebar = _(sidebarID);
+		
+	var playerScaleFactor = CalculateScale(player, sidebar);
+
+	if (useTransition) {
+	    player.style.transition = "left {0}s ease-in-out, transform {0}s ease-in-out, transformOrigin {0}s ease-in-out".format(playerTransitionTime);
+	} else {
+	    player.style.transition = "";
+	}
+
+    player.style.position = "fixed";
+    player.style.top = playerFlaotTop + "px";
+    player.style.left = sidebar.getBoundingClientRect().left + "px";
+    player.style.transformOrigin = "top left";
+    player.style.transform = "scale(" + playerScaleFactor + ")";
+}
+
+function SetPlayerInitial(useTransition) {
+	var player = _(playerID);
+	var sidebar = _(sidebarID);
+	
+	if (useTransition) {
+	    player.style.transition = "left {0}s ease-in-out, transform {0}s ease-in-out, transformOrigin {0}s ease-in-out".format(playerTransitionTime);
+	} else {
+	    player.style.transition = "";
+	}
 	
 	player.style.position = "absolute";
 	player.style.top = "0px";
@@ -59,12 +70,7 @@ function SetPlayerInitial(){
 
 function PageResize(e) {
     if (isFloating) {
-		var player = _(playerID);
-		var sidebar = _(sidebarID);
-		
-        var playerScaleFactor = CalculatePlayerScale(player, sidebar);
-        player.style.left = sidebar.getBoundingClientRect().left + "px";
-        player.style.transform = "scale(" + playerScaleFactor + ")";
+        SetPlayerFloating(false);
     }
 }
 
@@ -85,6 +91,18 @@ function Log(message){
 		console.log(message);
 		console.groupEnd();
 	}
+}
+
+String.prototype.format = function () {
+    var args = arguments;
+    var str = this;
+    for (var i = 0; i < args.length; i++) {
+        var match = /({(\d)})/.exec(str);
+        console.log(match);
+        str = str.replace(match[1], args[match[2]]);
+    }
+
+    return str;
 }
 
 function _(id){
