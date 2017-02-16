@@ -7,6 +7,13 @@ var playerID = "player-api";
 var sidebarID = "watch7-sidebar-contents";
 
 window.addEventListener("load", Load, false);
+CheckReadyState();
+
+function CheckReadyState(){
+	if(document.readyState == "complete"){
+		Load();
+	}
+}
 
 function Load() {
 

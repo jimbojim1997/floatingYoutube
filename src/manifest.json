@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Floating Youtube",
-  "version": "1",
+  "version": "1.1",
   "description": "Floats the Youtube video on the right when scrolling past the video.",
   "author": "jimbojim1997",
 
